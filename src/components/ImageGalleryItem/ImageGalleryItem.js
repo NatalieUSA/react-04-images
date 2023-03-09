@@ -13,7 +13,7 @@ const ImageGalleryItem = ({ images, showImage }) => {
       />
     </GalleryItem>
   ));
-  console.log('render image gallery item');
+  // console.log('render image gallery item');
   return elements;
 };
 

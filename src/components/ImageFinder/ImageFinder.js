@@ -31,8 +31,6 @@ export const ImageFinder = () => {
       try {
         setLoading(true);
         const data = await searchPhotos(search, page);
-        console.log(data);
-        console.log(data.hits);
         setImages(prevImages => [...prevImages, ...data.hits]);
 
         if (!data.total) {
@@ -50,7 +48,6 @@ export const ImageFinder = () => {
   }, [search, page, setLoading, setImages, setError]);
 
   const searchImages = useCallback(({ search }) => {
-    console.log(search);
     setSearch(search);
     setImages([]);
     setPage(1);

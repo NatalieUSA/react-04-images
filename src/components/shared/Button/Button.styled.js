@@ -4,7 +4,7 @@ export const Btn = styled.button`
    {
     padding: 8px 16px;
     margin: 0 auto;
-    margin-top: 30px;
+    margin-top: 80px;
     margin-bottom: 100px;
     border-radius: 15px;
     background-color: #fff;

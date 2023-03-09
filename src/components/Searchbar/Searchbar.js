@@ -16,28 +16,7 @@ const Searchbar = ({ onSubmit }) => {
     initialState,
     onSubmit,
   });
-
-  console.log('render form');
-  // const [state, setState] = useState({ ...initialState });
-
-  // const handleChange = ({ target }) => {
-  //   const { name, value } = target;
-  //   setState(prevState => {
-  //     return { ...prevState, [name]: value };
-  //   });
-  // };
-  // const handleSubmit = e => {
-  //   e.preventDefault();
-  //   onSubmit({ ...state });
-  //   setState({ ...initialState });
-  //   reset();
-  // };
-
-  // const reset = () => {
-  //   setState({
-  //     search: '',
-  //   });
-  // };
+  // console.log('render form');
 
   const { search } = state;
   return (
@@ -67,3 +46,24 @@ export default memo(Searchbar);
 Searchbar.propTypes = {
   onSubmit: propTypes.func.isRequired,
 };
+
+// const [state, setState] = useState({ ...initialState });
+
+// const handleChange = ({ target }) => {
+//   const { name, value } = target;
+//   setState(prevState => {
+//     return { ...prevState, [name]: value };
+//   });
+// };
+// const handleSubmit = e => {
+//   e.preventDefault();
+//   onSubmit({ ...state });
+//   setState({ ...initialState });
+//   reset();
+// };
+
+// const reset = () => {
+//   setState({
+//     search: '',
+//   });
+// };

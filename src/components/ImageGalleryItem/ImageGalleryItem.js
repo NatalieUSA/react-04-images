@@ -1,7 +1,9 @@
+import { memo } from 'react';
+
 import propTypes from 'prop-types';
 import { GalleryImage, GalleryItem } from './iImageGalleryItem.styled';
 
-export const ImageGalleryItem = ({ images, showImage }) => {
+const ImageGalleryItem = ({ images, showImage }) => {
   const elements = images.map(({ id, webformatURL, largeImageURL, tags }) => (
     <GalleryItem key={id}>
       <GalleryImage
@@ -11,8 +13,11 @@ export const ImageGalleryItem = ({ images, showImage }) => {
       />
     </GalleryItem>
   ));
+  console.log('render image gallery item');
   return elements;
 };
+
+export default memo(ImageGalleryItem);
 
 ImageGalleryItem.defaultProps = {
   images: [],

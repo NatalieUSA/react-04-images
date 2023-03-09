@@ -40,15 +40,17 @@ export const Button = styled.button`
     width: 48px;
     height: 48px;
     border: 0;
-    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrhkEU0KPDvyBoyfbIafTHhwmICducD2Dtgg&usqp=CAU');
-    background-size: 50%;
+    background-image: url('https://images.rawpixel.com/image_png_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3JtNTMzLWljb24tMTI0LnBuZw.png');
+    background-size: 90%;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.6;
+    opacity: 0.8;
     transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     outline: none;
     background-color: white;
+    margin-left: 4px;
+    margin-right: 4px;
 
     :hover {
       opacity: 1;
@@ -77,10 +79,10 @@ export const FormInput = styled.input`
     font: inherit;
     font-size: 20px;
     border: none;
-    border-radius: 15px;
+    border-radius: 25px;
     outline: none;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding-left: 15px;
+    padding-right: 5px;
 
     ::placeholder {
       font: inherit;

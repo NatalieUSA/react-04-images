@@ -1,10 +1,10 @@
-import { Component } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 
 import { Loader } from 'components/shared/Loader/Loader';
 
-import { Searchbar } from 'components/Searchbar/Searchbar';
-import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import Searchbar from 'components/Searchbar/Searchbar';
+import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Modal } from 'components/shared/Modal/Modal';
 import { ModalItem } from 'components/ModalItem/ModalItem';
@@ -13,106 +13,85 @@ import { ErrorMessage } from 'components/shared/ErrorMessage/ErrorMessage';
 
 import { searchPhotos } from 'components/shared/servises/image-api';
 
-export class ImageFinder extends Component {
-  state = {
-    search: '',
-    images: [],
-    loading: false,
-    error: null,
-    page: 1,
-    showModal: false,
-    modalItem: null,
-    showBtn: false,
-  };
+export const ImageFinder = () => {
+  const [search, setSearch] = useState('');
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [modalItem, setModalItem] = useState(null);
+  const [showBtn, setShowBtn] = useState(false);
 
-  componentDidUpdate(prevProps, prevState) {
-    const { search, page } = this.state;
-    if (prevState.search !== search || prevState.page !== page) {
-      this.fetchPhotos();
+  useEffect(() => {
+    if (!search) {
+      return;
     }
-  }
+    const fetchPhotos = async () => {
+      try {
+        setLoading(true);
+        const data = await searchPhotos(search, page);
+        console.log(data);
+        console.log(data.hits);
+        setImages(prevImages => [...prevImages, ...data.hits]);
 
-  async fetchPhotos() {
-    try {
-      this.setState({ loading: true });
-      const { search, page } = this.state;
-      const data = await searchPhotos(search, page);
-
-      this.setState(({ images }) => ({
-        images: [...images, ...data.hits],
-      }));
-
-      if (!data.total) {
-        toast.error('No results were found for your search!');
+        if (!data.total) {
+          toast.error('No results were found for your search!');
+        }
+        setShowBtn(page < Math.ceil(data.totalHits / 12));
+      } catch (error) {
+        setError(error.message);
+        toast.error(`Whoops, something went wrong ${error.message}`);
+      } finally {
+        setLoading(false);
       }
+    };
+    fetchPhotos();
+  }, [search, page, setLoading, setImages, setError]);
 
-      this.setState({
-        showBtn: this.state.page < Math.ceil(data.totalHits / 12),
-      });
-    } catch (error) {
-      this.setState({ error: error.message });
-      toast.error(`Whoops, something went wrong ${error.message}`);
-    } finally {
-      this.setState({ loading: false });
-    }
-  }
+  const searchImages = useCallback(({ search }) => {
+    console.log(search);
+    setSearch(search);
+    setImages([]);
+    setPage(1);
+  }, []);
 
-  searchImages = ({ search }) => {
-    this.setState({ search, images: [], page: 1 });
-  };
+  const loadMore = useCallback(() => {
+    setPage(prevPage => prevPage + 1);
+  }, []);
 
-  loadMore = () => {
-    this.setState(({ page }) => ({ page: page + 1 }));
-  };
+  const showImage = useCallback(largeImageURL => {
+    setModalItem(largeImageURL);
+    setShowModal(true);
+  }, []);
 
-  showImage = ({ largeImageURL }) => {
-    this.setState({
-      modalItem: {
-        largeImageURL,
-      },
-      showModal: true,
-    });
-  };
+  const closeModal = useCallback(() => {
+    setModalItem(null);
+    setShowModal(false);
+  }, []);
 
-  closeModal = () => {
-    this.setState({
-      modalItem: null,
-      showModal: false,
-    });
-  };
+  return (
+    <>
+      <Searchbar onSubmit={searchImages} />
 
-  render() {
-    const { images, loading, error, showModal, modalItem, showBtn } =
-      this.state;
-    const { searchImages, loadMore, showImage, closeModal } = this;
+      <ImageGallery>
+        <ImageGalleryItem showImage={showImage} images={images} />
+      </ImageGallery>
 
-    return (
-      <>
-        <Searchbar onSubmit={searchImages} />
+      {showBtn && <Button loadMore={loadMore} />}
 
-        <ImageGallery>
-          <ImageGalleryItem showImage={showImage} images={images} />
-        </ImageGallery>
+      {loading && <Loader />}
+      {error && (
+        <ErrorMessage>
+          ...Error ... somethig went wrong. Request failed with status code 404
+        </ErrorMessage>
+      )}
 
-        {/* {Boolean(images.length) ||
-          (images.length >= 30 && <Button onClick={loadMore} />)} */}
-
-        {showBtn && <Button loadMore={loadMore} />}
-
-        {loading && <Loader />}
-        {error && (
-          <ErrorMessage>
-            ...Error ... somethig went wrong. Request failed with status code
-            404
-          </ErrorMessage>
-        )}
-
-        {showModal && (
-          <Modal close={closeModal}>
-            <ModalItem {...modalItem} />
-          </Modal>
-        )}
-      </>
-    );
-  }
-}
+      {showModal && (
+        <Modal close={closeModal}>
+          <ModalItem {...modalItem} />
+        </Modal>
+      )}
+    </>
+  );
+};

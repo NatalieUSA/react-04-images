@@ -1,5 +1,6 @@
-import { Component } from 'react';
+import { memo } from 'react';
 import propTypes from 'prop-types';
+import { initialState } from './initialState';
 import {
   Header,
   Button,
@@ -8,57 +9,60 @@ import {
   FormInput,
 } from './Searchbar.styled';
 
-export class Searchbar extends Component {
-  state = {
-    search: '',
-  };
+import { useForm } from 'components/shared/hooks/useForm';
 
-  handleChange = ({ target }) => {
-    const { name, value } = target;
-    this.setState({
-      [name]: value,
-    });
-  };
+const Searchbar = ({ onSubmit }) => {
+  const { state, handleChange, handleSubmit } = useForm({
+    initialState,
+    onSubmit,
+  });
 
-  handleSubmit = e => {
-    e.preventDefault();
-    const { onSubmit } = this.props;
-    onSubmit({ ...this.state });
-    this.reset();
-  };
+  console.log('render form');
+  // const [state, setState] = useState({ ...initialState });
 
-  reset() {
-    this.setState({
-      search: '',
-    });
-  }
+  // const handleChange = ({ target }) => {
+  //   const { name, value } = target;
+  //   setState(prevState => {
+  //     return { ...prevState, [name]: value };
+  //   });
+  // };
+  // const handleSubmit = e => {
+  //   e.preventDefault();
+  //   onSubmit({ ...state });
+  //   setState({ ...initialState });
+  //   reset();
+  // };
 
-  render() {
-    const { search } = this.state;
-    const { handleSubmit, handleChange } = this;
+  // const reset = () => {
+  //   setState({
+  //     search: '',
+  //   });
+  // };
 
-    return (
-      <Header>
-        <Form onSubmit={handleSubmit}>
-          <Button type="submit">
-            <ButtonLabel></ButtonLabel>
-          </Button>
+  const { search } = state;
+  return (
+    <Header>
+      <Form onSubmit={handleSubmit}>
+        <Button type="submit">
+          <ButtonLabel />
+        </Button>
 
-          <FormInput
-            onChange={handleChange}
-            value={search}
-            name="search"
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            required
-          />
-        </Form>
-      </Header>
-    );
-  }
-}
+        <FormInput
+          onChange={handleChange}
+          value={search}
+          name="search"
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          required
+        />
+      </Form>
+    </Header>
+  );
+};
+
+export default memo(Searchbar);
 
 Searchbar.propTypes = {
   onSubmit: propTypes.func.isRequired,

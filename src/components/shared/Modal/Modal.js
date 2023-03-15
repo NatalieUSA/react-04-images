@@ -16,20 +16,21 @@ export const Modal = ({ close, children }) => {
   //   },
   //   [close]
   // );
-  const closeModalByEscape = ({ code }) => {
-    if (code === 'Escape') {
-      close();
-    }
-  };
+
   const closeModalByClick = ({ target, currentTarget }) => {
     if (target === currentTarget) {
       close();
     }
   };
   useEffect(() => {
+    const closeModalByEscape = ({ code }) => {
+      if (code === 'Escape') {
+        close();
+      }
+    };
     document.addEventListener('keydown', closeModalByEscape);
     return () => document.removeEventListener('keydown', closeModalByEscape);
-  }, []);
+  }, [close]);
 
   return createPortal(
     <Overlay onClick={closeModalByClick}>
